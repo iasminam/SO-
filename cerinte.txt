@@ -1,0 +1,174 @@
+Saptamana 6: Fișiere. Directoare
+ Se va scrie un program în limbajul C ce va prelucra un fișier de intrare ce reprezinta o
+ imagine in format BMP și va realiza o serie de statistici pe baza acestui fișier. Programul
+ va primi un parametru și se va apela după cum urmează:
+ ./program <fisier_intrare>
+ Programul va verifica faptul că a primit un singur argument, precum și tipul acestuia, iar
+ în caz contrar va afișa un mesaj de eroare ”Usage ./program
+ <fisier_intrare>”.
+ Programul trebuie sa citeasca header-ul fisierului BMP și sa extraga valoarea înălțimii,
+ respectiv a lungimii pentru imaginea data.
+ Programul va crea un fișier cu numele statistica.txt în care vor fi scrise
+ următoarele informații:
+ nume fisier: poza.bmp
+ inaltime: 1920
+ lungime: 1280
+ dimensiune: <dimensiune in octeti>
+ identificatorul utilizatorului: <user id>
+ timpul ultimei modificari: 28.10.2023
+ contorul de legaturi: <numar legaturi>
+ drepturi de acces user: RWX
+ drepturi de acces grup: R–-
+ drepturi de acces altii:--
+Se vor folosi doar apeluri sistem pentru lucrul cu fișierele (open, read, write, close, stat,
+ fstat, lstat... etc). Nu se permite folosirea funcțiilor din biblioteca standard stdio pentru
+ lucrul cu fisiere (fopen, fread, fwrite, fclose... etc). Se permite folosirea funcției sprintf
+ pentru a obține un string formatat pentru a putea fi scris în fișier folosind apelul sistem
+ "write".
+ Folosiți corect POSIX API, verificati codurile de retur și tratați scenariile de eroare
+
+
+
+
+
+
+
+
+
+
+
+
+
+Saptamana 7: Fișiere. Directoare
+ Sa se modifice programul din saptamana anterioare astfel incat acesta va primi ca și
+ parametru calea către un director (în locul unei imagini) și prin urmare se va apela astfel:
+ ./program <director_intrare>
+ Programul va trebui sa parcurga directorul dat ca parametru și va scrie în cadrul fișierului
+ statistica.txt în funcție de tipul intrării curente astfel:
+dacă este un fișier obișnuit cu extensia .bmp va scrie exact aceleași informații
+ precum programul de saptamana trecuta--
+dacă este un fișier obișnuit, dar fără extensia .bmp,va scrie aceleași informații
+ ca și în cazul anterior, însă fără lungime și înălțime
+ dacă este un director va scrie următoarele informații:
+ nume director: director
+ identificatorul utilizatorului: <user id>
+ drepturi de acces user: RWX
+ drepturi de acces grup: R–-
+ drepturi de acces altii:--
+dacă este o legatura simbolica ce indica spre un fișier obișnuit va scrie
+ următoarele informații:
+ nume legatura: nume
+ dimensiune: dimensiunea legaturii
+ dimensiune fisier: dimensiunea fisierului target
+ drepturi de acces user: RWX
+ drepturi de acces grup: R–-
+ drepturi de acces altii:---- pentruorice alte cazuri nu se va scrie nimic în fișierul statistica.txt
+
+
+
+
+
+
+
+
+
+
+
+Saptamana 8: Procese
+ Să se modifice programul din săptămâna anterioară astfel încât acesta va primi un al
+ doilea argument ce va reprezenta calea către un director și prin urmare se va apela
+ astfel:
+ ./program <director_intrare> <director_iesire>
+ Pentru fiecare intrare (fișier obișnuit, fișier.bmp, director, legătură simbolică ce indică
+ spre un fișier obișnuit) din directorul de intrare (primul argument), procesul părinte va
+ crea câte un nou proces care va scrie informațiile referitoare la statistică într-un fișier din
+ directorul de ieșire (al doilea argument), cu numele
+ <nume_intrare>_statistica.txt, unde <nume_intrare> reprezinta numele
+ intrarii curente din directorul de intrare.
+ La încheierea fiecărui proces fiu, acesta va trimite părintelui numărul de linii scrise în
+ f
+ ișierul statistica.txt.
+ În plus, pentru fiecare intrare ce reprezinta o imagine .bmp procesul părinte va crea un
+ al doilea proces (pe langa cel responsabil de scrierea de informații în fișierul de
+ statistică), care sa citească întreg conținutul fișierului și care va converti imaginea în
+ tonuri de gri. Știind ca în cadrul imaginilor.bmp fiecare pixel este caracterizat de 3 valori
+ cuprinse între 0 și 255 (reprezentate pe 1 octet), puteți folosind formula de mai jos
+ pentru conversia cerută:
+ P_gri = 0.299 * P_rosu + 0.587 * P_verde + 0.114 * P_albastru
+ unde P_rosu, P_verde, respectiv P_albastru, reprezinta intensitatile celor trei culori.
+ La încheierea fiecărui proces fiu, părintele îi va prelua starea și va afișa un mesaj de
+ forma “S-a încheiat procesul cu pid-ul <PID> și codul <cod>”,unde
+ <PID> reprezinta PID-ul procesului fiu care s-a incheiat, iar <cod> reprezinta codul cu
+ care acesta s-a incheiat.
+ !!! TOATE PROCESELE CREATE TREBUIE SA RULEZE IN PARALEL !!!
+Informații adiționale referitoare la prelucrarea pixelilor:
+ Structura unui fișier .bmp este prezentată mai jos.
+Valorile pe care trebuie sa le modificati se găsesc în zona denumite Raster Data.--
+ Numărul total de pixeli este height x width, unde height reprezinta inaltimea
+ imaginii, iar width reprezinta latimea imaginii (ambele valori putand fi obținute din
+ info header).
+ Tineti cont ca fiecare pixel este reprezentat cu ajutorul a 3 valori, fiecare
+ reprezentată pe cate un octet.
+Pentru a obține efectul cerut va trebui sa suprascrieti fiecare din cele 3 valori
+ corespunzătoare unui pixel, P_rosu, P_verde, respectiv P_albastru, cu valoarea
+ P_gri obtinuta
+Trebuie sa modificati imaginea inițială fără a o salva într-un fișier nou.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Saptamana 9: Pipes
+ Sa se implementeze:
+ A) un shell script care se apelează sub forma "bash script <c>", unde <c> este un caracter
+ alfanumeric.
+ Script-ul va verifica faptul că a primit exact un argument. În caz contrar, va afișa un mesaj de
+ utilizare și se va încheia.
+ Script-ul va citi continuu linii de la intrarea standard pana la intalnirea end-of-file (atunci când
+ intrarea standard e tastatura/terminal, condiția se poate genera prin combinatia de butoane
+ CTRL+D) și va contoriza numărul de “propoziții corecte” care conțin caracterul primit ca și
+ argument.
+ Opropoziție se considera corecta dacă respectă următoarele condiții:
+începe cu litera mare--
+conține doar litere mari, mici, cifre, spații, virgula, punct semnul exclamarii sau
+ semnul întrebării
+ se termina cu semnul întrebării, semnul exclamarii sau punct
+ nu contine virgula (,) înainte de și
+ La final va afișa acest contor pe ecran (doar valoarea numerică).
+ B) Să se modifice programul C din saptamana anterioara astfel incat va primi un al treilea
+ argument <c> ce reprezinta un caracter alfanumeric și prin urmare programul se va apela
+ astfel:
+ ./program <director_intrare> <director_iesire> <c>
+ In saptamana precedenta a fost cerută următoarea functionalitate: La parcurgerea
+ directorului, în cazul în care o intrare curentă este un fișier obișnuit, dar nu o imagine BMP,
+ procesul părinte creeaza un proces ce va scrie informații despre acest fișier într-un fișier de
+ statistica din directorul de ieșire.
+ Pe langa acest proces fiu, pentru categoria fișierelor obișnuite care nu au extensia .bmp,
+ părintele va mai crea cate un proces fiu.
+ Tot pentru categoria fișierelor obișnuite care nu au extensia .bmp, după ce procesul fiu
+ responsabil cu fișierele de statistica a scris datele in fișierul corespunzător din directorul de
+ ieșire, acest proces va trebui sa genereze folosind o comanda conținutul fișierului obișnuit
+ fără extensie .bmp pentru care a extras informațiile statistice și va trimite acest conținut
+ celuilalt proces fiu creat de părinte.
+ Cel de-al doilea proces fiu creat de părinte pentru fiecare fișier obișnuit fără extensia .bmp
+ va calcula, din secvența primită de la procesul fiu responsabil cu generarea conținutului
+ fișierului, numărul de “propoziții corecte” care conțin caracterul <c> primit ca și argument de
+program și va transmite acest număr părintelui printr-un pipe. În acest scop, acest proces va
+ apela script-ul de la punctul A).
+ Părintele va afișa pe ecran suma tuturor acestor numere primite sub forma unui mesaj: ”Au
+ fost identificate in total <n> propozitii corecte care contin
+ caracterul <c>”,unde <n> reprezinta numarul de propozitii corecte, iar <c> reprezinta
+ caracterul primit de program ca argument.
+ Toate procesele fiu create, precum și procesul părinte vor rula obligatoriu în paralel.
+ La încheierea fiecărui proces fiu, părintele îi va prelua starea și va afișa un mesaj de forma
+ ”S-a încheiat procesul cu pid-ul <pid> și codul <cod>”, unde<pid>
+ reprezinta PID-ul procesului fiu care s-a incheiat, iar <cod> reprezinta codul cu care acesta
+ s-a incheiat.
